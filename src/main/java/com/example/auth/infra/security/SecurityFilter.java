@@ -23,20 +23,21 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        var token = this.recoverToken(request);
+        var token = this.recoverToken(request); //Pegou o token
         if(token != null){
             var login = tokenService.validateToken(token);
             UserDetails user = userRepository.findByLogin(login);
 
-            var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities()); //Passa as informações do usuario. como roles e etc para as futuras endpoints(as requisições como /salvar e etc)
+            SecurityContextHolder.getContext().setAuthentication(authentication); //Manda pro mano Spring Security
         }
-        filterChain.doFilter(request, response);
+        filterChain.doFilter(request, response); //Chamando o proximo filtro
     }
 
-    private String recoverToken(HttpServletRequest request){
+    private String recoverToken(HttpServletRequest request){ //Função para pegar o token
         var authHeader = request.getHeader("Authorization");
         if(authHeader == null) return null;
         return authHeader.replace("Bearer ", "");
+        //É padrão nas requisições um Bearer SEGUIDO do token, o que ela está fazendo é pegar esta palavra e retirando para depois pegar só o token
     }
 }

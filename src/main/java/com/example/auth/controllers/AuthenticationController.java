@@ -29,12 +29,12 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data){
-        var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
-        var auth = this.authenticationManager.authenticate(usernamePassword);
+        var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password()); //Criando um objeto com a senha e username para gerar o token de usernamePassword
+        var auth = this.authenticationManager.authenticate(usernamePassword);  //Autentica
 
-        var token = tokenService.generateToken((User) auth.getPrincipal());
+        var token = tokenService.generateToken((User) auth.getPrincipal()); //Gera um token pro user fazer as paradas dele
 
-        return ResponseEntity.ok(new LoginResponseDTO(token));
+        return ResponseEntity.ok(new LoginResponseDTO(token)); //Manda pra ele poder usar por um DTO
     }
 
     @PostMapping("/register")

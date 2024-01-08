@@ -19,12 +19,12 @@ public class TokenService {
 
     public String generateToken(User user){
         try{
-            Algorithm algorithm = Algorithm.HMAC256(secret);
-            String token = JWT.create()
-                    .withIssuer("auth-api")
-                    .withSubject(user.getLogin())
-                    .withExpiresAt(genExpirationDate())
-                    .sign(algorithm);
+            Algorithm algorithm = Algorithm.HMAC256(secret); //Algoritmo de geração de token( esse secret é definido no applicaton.proprieties normalmente é uma variavel de ambiente)
+            String token = JWT.create() //Cria o token
+                    .withIssuer("auth-api") //Com o criador
+                    .withSubject(user.getLogin()) //Para tal Uber
+                    .withExpiresAt(genExpirationDate()) //Tempo de expiração
+                    .sign(algorithm); //Com esse algoritmo
             return token;
         } catch (JWTCreationException exception) {
             throw new RuntimeException("Error while generating token", exception);
@@ -45,6 +45,9 @@ public class TokenService {
     }
 
     private Instant genExpirationDate(){
-        return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
+        return LocalDateTime.now() //Pegue a hora atual
+                        .plusHours(2) //Adicione duas horas
+                        .toInstant(ZoneOffset. //Transforme em um Instant
+                        of("-03:00")); //Tirando 3 horas(para ficar igual o horario de Brasilia)
     }
 }
